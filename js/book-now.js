@@ -66,8 +66,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   //  Date of Birth STEP 3
   flatpickr("#dateOfBirth", {
-    dateFormat: "Y-m-d H:i",
-    maxDate: "today",
+    altInput: true,
+    altFormat: "F j, Y",
+    dateFormat: "Y-m-d",
+    maxDate: "today"
   });
 
 
