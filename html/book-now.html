@@ -156,6 +156,7 @@
                         <input type="text" id="dateOfBirth" placeholder="Date of Birth" required>
                         <input type="email" id="email" placeholder="Email*" required>
                         <input type="tel" id="phone" placeholder="Phone Number*" required>
+                        <input type="tel" id="emergencyContact" placeholder="Emergency Contact Number" required>
 
                         <select id="province" required>
                             <option value="">Select Province*</option>
@@ -175,6 +176,14 @@
                         <input type="text" id="petName" placeholder="Pet Name*" required>
                         <input type="text" id="species" placeholder="Species*" required>
                         <input type="text" id="breed" placeholder="Breed*" required>
+                        <input type="text" id="color" placeholder="Color*" required>
+                        
+                        <select id="sex" required>
+                            <option value="" >Select Sex*</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                        
                         <textarea id="comments" placeholder="Comments (optional)" maxlength="400"></textarea>
                         <div class="btn-container">
                             <button type="button" class="back-schedule-btn">Back</button>
@@ -235,6 +244,11 @@
 
 
     </main>
+
+    <!-- Loading Screen Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
 
     <footer class="site-footer">
         <div class="office-hours">

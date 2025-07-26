@@ -22,6 +22,18 @@ document.addEventListener('DOMContentLoaded', function() {
   // HEADER ANIMATION
   const pageHeader = document.querySelector('.page-header');
   const logo = document.querySelector('.transition-logo');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+
+  // Function to show loading screen
+  function showLoading(duration = 5000) {
+    loadingOverlay.style.display = 'flex';
+    return new Promise(resolve => {
+      setTimeout(() => {
+        loadingOverlay.style.display = 'none';
+        resolve();
+      }, duration);
+    });
+  }
 
   // Disable Continue buttons initially
   continueBtn.disabled = true;
@@ -75,7 +87,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // Step 1 -> Step 2
-  continueBtn.addEventListener('click', function() {
+  continueBtn.addEventListener('click', async function() {
+    // Show loading screen for 2 seconds
+    await showLoading(2000);
+    
     formStep.style.display = 'none';
     scheduleStep.style.display = 'block';
     steps[1].classList.add('active');
@@ -84,7 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Step 2 -> Step 3
-  continueScheduleBtn.addEventListener('click', function() {
+  continueScheduleBtn.addEventListener('click', async function() {
+    // Show loading screen for 2 seconds
+    await showLoading(2000);
+    
     // Capture the selected values from Step 2
     const selectedReason = reasonSelect.value;
     const selectedProvider = providerSelect.options[providerSelect.selectedIndex].text;
@@ -103,19 +121,26 @@ document.addEventListener('DOMContentLoaded', function() {
   const submitBtn = document.querySelector('.submit-btn');
   const confirmationMessage = document.querySelector('.confirmation-message');
 
-  submitBtn.addEventListener('click', function (e) {
+  submitBtn.addEventListener('click', async function (e) {
     e.preventDefault();
 
     // Capture client information from Step 3 form
     const requiredFields = [
+      // Client Informations
       document.getElementById('firstName'),
       document.getElementById('lastName'),
       document.getElementById('email'),
       document.getElementById('phone'),
+      document.getElementById('emergencyContact'),
+      document.getElementById('dateOfBirth'),
+
+      // For Pet Informations
       document.getElementById('petName'),
       document.getElementById('species'),
       document.getElementById('breed'),
-      document.getElementById('dateOfBirth')
+      document.getElementById('color'),
+      document.getElementById('sex'),
+      
     ];
 
       let allValid = true;
@@ -133,24 +158,36 @@ document.addEventListener('DOMContentLoaded', function() {
       alert('Please fill out all required fields.');
       return; // Don't proceed to Step 4
     }
+
+    // Show loading screen for 2 seconds before showing confirmation
+    await showLoading(2000);
+
     // Capture client information
     const firstName = requiredFields[0].value;
     const lastName = requiredFields[1].value;
     const email = requiredFields[2].value;
     const phone = requiredFields[3].value;
-    const petName = requiredFields[4].value;
-    const species = requiredFields[5].value;
-    const breed = requiredFields[6].value;
-    const dateOfBirth = requiredFields[7].value;
+    const emergencyContact = requiredFields[4].value;
+    // For Pet Information
+    const petName = requiredFields[6].value;
+    const species = requiredFields[7].value;
+    const breed = requiredFields[8].value;
+    const color = requiredFields[9].value;
+    const sex = requiredFields[10].value;
+    const dateOfBirth = requiredFields[5].value;
     const comments = document.getElementById('comments').value;
 
     // Get previously selected appointment details
     const selectedReason = reasonSelect.value;
     const selectedProvider = providerSelect.options[providerSelect.selectedIndex].text;
     const selectedDateTime = dateInput.value;
+    
+    // Get client type from Step 1
+    const selectedClientType = document.querySelector('input[name="clientType"]:checked');
+    const clientType = selectedClientType ? selectedClientType.value : '';
 
     // Update the confirmation message with dynamic content
-    updateConfirmationMessage(firstName, lastName, selectedProvider, selectedReason, selectedDateTime);
+    updateConfirmationMessage(clientType, firstName, lastName, selectedProvider, selectedReason, selectedDateTime);
 
     // Hide all previous steps
     formStep.style.display = 'none';
@@ -164,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Function to update confirmation message with dynamic data
-  function updateConfirmationMessage(firstName, lastName, provider, reason, dateTime) {
+  function updateConfirmationMessage(clientType, firstName, lastName, provider, reason, dateTime) {
     const confirmationBox = document.querySelector('.booking-confirmation-box');
     const formTitle = confirmationMessage.querySelector('.form-title');
     const formSubtitle = confirmationMessage.querySelector('.form-subtitle');
@@ -173,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
     formTitle.textContent = `Thanks for submitting a request`;
     formSubtitle.textContent = `We will contact you shortly to confirm your request, ${firstName}.`;
     
+
     // Update confirmation details
     confirmationBox.innerHTML = `
       <div class="confirmation-item">
@@ -181,6 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
           <div><strong>PetMate Animal Clinic</strong></div>
           <div>NIA ROAD QUEL COMMERCIAL BUILDING, CARSADANG BAGO 2, IMUS, CAVITE</div>
         </div>
+      </div>
+
+      <div class="confirmation-item">
+        <label>Client Type:</label>
+        <div class="info-box">${capitalizeFirst(clientType)} Client</div>
       </div>
 
       <div class="confirmation-item">
